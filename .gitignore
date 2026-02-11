@@ -4,5 +4,3 @@ __pycache__
 .idea
 .terraform/
 .terraform*
-*.tfstate
-*.tfstate.backup
