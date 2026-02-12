@@ -34,8 +34,7 @@ def test_generate_temperature_csv_content(temp_csv_file):
         
         assert len(rows) == num_records
         
-        valid_cities = {"New York", "London", "Tokyo", "Paris", "Sydney"}
-        
+        valid_cities = {"New York", "London", "Tokyo", "Paris", "Sydney", "Mumbai", "Delhi"}
         for row in rows:
             # Test city
             assert row[0] in valid_cities
