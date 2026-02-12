@@ -158,4 +158,22 @@ git push origin feature/your-feature
 ### IAM Roles
 - Glue service role with necessary permissions
 - S3 access policies
-- Least privilege principle applied
+- Least privilege principle 
+
+##  Challenges & Solutions
+
+Real-world engineering often involves navigating unexpected hurdles. Here are the key technical challenges I tackled during this project:
+
+### 1. The "Silent Failure" of Ephemeral Storage
+* **Challenge**: Initial AWS Glue jobs were marked as "Succeeded," but the generated CSV data was missing from the S3 bucket.
+* **Diagnosis**: I identified that the script was writing data to the Glue worker's local storage (`/tmp`). In serverless environments, this storage is ephemeral and is wiped immediately after the job finishes.
+* **Solution**: I refactored the Python logic to use the **boto3 SDK**, explicitly handling the transfer of data from the worker to the S3 Data Lake before the job process terminated.
+
+### 2. Security Gates in CI/CD
+* **Challenge**: The GitHub Actions pipeline failed during the Security Scan stage.
+* **Diagnosis**: The **Bandit** security tool flagged the use of hardcoded `/tmp` directories as a potential vulnerability.
+* **Solution**: I implemented secure coding practices to satisfy the automated security gates and utilized `# nosec` decorators for verified safe operations, allowing the pipeline to proceed while maintaining high security standards.
+
+### 3. Maintaining Test Parity
+* **Challenge**: Expanding the dataset to include new cities (e.g., "Delhi" and "Mumbai") caused the automated test suite to fail.
+* **Solution**: This emphasized the importance of synchronized development. I updated the test logic to dynamically validate the new data inputs, ensuring the CI/CD pipeline remained a reliable indicator of code health.
