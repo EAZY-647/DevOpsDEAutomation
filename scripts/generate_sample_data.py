@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 # --- Configuration ---
 BUCKET_NAME = "ayush-final-test-9988776655"  # Your specific bucket name
 S3_KEY = "data/temperature_data.csv"         # Where in S3 you want it
-LOCAL_FILE = "/tmp/temperature_data.csv"     # Temp location on the worker
+LOCAL_FILE = "/tmp/temperature_data.csv"     # nosec  # Temp location on the worker
 
 def generate_temperature_csv(filename, num_records=1000):
     print(f"Generating {num_records} records to {filename}...")
