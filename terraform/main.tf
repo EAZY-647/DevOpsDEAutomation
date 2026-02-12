@@ -50,7 +50,7 @@ resource "aws_s3_object" "data_directory" {
   key    = "data/"
 }
 
-# Upload the data file
+# Upload the data file (Optional: Terraform can manage this, or your script)
 resource "aws_s3_object" "temperature_data" {
   bucket       = aws_s3_bucket.raw_data.id
   key          = "data/temperature_data.csv"
@@ -156,4 +156,25 @@ resource "aws_glue_crawler" "main" {
     aws_s3_object.data_directory,
     aws_iam_role_policy_attachment.glue_service_role
   ]
+}
+
+# --- AWS Glue Job Definition (Added) ---
+
+resource "aws_glue_job" "data_generator" {
+  name     = "generate-temperature-data-job"
+  role_arn = aws_iam_role.glue_role.arn  # References the role defined above
+  glue_version = "4.0"
+
+  command {
+    script_location = "s3://${local.bucket_name}/scripts/generate_sample_data.py"
+    python_version  = "3"
+  }
+
+  default_arguments = {
+    "--job-language" = "python"
+    "--TempDir"      = "s3://${local.bucket_name}/temporary/"
+  }
+
+  max_retries = 0
+  timeout     = 10
 }
